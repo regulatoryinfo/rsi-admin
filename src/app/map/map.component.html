@@ -1,0 +1,472 @@
+
+<div class="row" >
+    <div class="col-12" style=" border:solid black 1px; height:100%;" >
+      <div class="small-map-container">
+        <ngx-base-map 
+        (map$)="receiveMap($event)"
+        (zoom$)="receiveZoom($event)"
+        (move$)="receiveMove($event)"
+        (mapMove$)="receiveMapMove($event)"
+        ></ngx-base-map>
+
+
+        <!-- <div class="profilewindow" [hidden]="!profShow" style="position: absolute; left: 5px; bottom: 5px;">
+            <p class="graph-heading"  style="padding-left:5px;background-color: #afafaf"> 
+  
+              <span  style="float:right;z-index:999;">
+                      
+                <fa-icon [icon]="close" (click)="closeProfile()"></fa-icon>
+              </span>
+  
+  
+            </p>
+            <div style="height:375px" *ngIf="profShow" >
+              
+                <google-chart [title]="bigProfdata.ap.title" [type]="'ComboChart'" [data]="bigProfdata.gchtdata" [columnNames]="gchtColumns" 
+                [options]='gchtOptions' style="height:100%;width:100%" (mouseenter)="profileMousemove($event,bigProfdata)"  id="{{bigProfdata.ap.name}}"
+                ></google-chart>
+            </div>
+        </div> -->
+
+        <div style="position: absolute; top:10px; left: 40%; width: 20%; border: solid 2px blue; background-color: aliceblue; z-index:998; text-align: center;" > 
+           <span stype="font-size: 16px;">{{org_id}} - {{company}} </span> 
+           <button class="btn-success" style="padding-left:5px; background-color: green; color: #ffffff;" (click)="pe_approve(org_id)" *ngIf="!pe_approved">PE Approve</button>
+        </div> 
+
+        <!--layer control window-->
+        <div style="position:absolute; right:10px; top:10px;  z-index:998;" [hidden]="layerControlvisible"> 
+            <button class="button" (click)="showLayercontrol()" style="height:50px;width: 50px; "><fa-icon [icon]="layergroup"></fa-icon></button>
+        </div>
+
+        <div  class="control-window"  [hidden]="!layerControlvisible">
+            <div style="width:95%; text-align: right" (click)="hideLayercontrol()"><fa-icon [icon]="arrowRight" ></fa-icon></div>
+            <div style="padding:2px;width:95%; " >
+                <form >
+                    <div>
+                        <div >
+                            <p class="map-control-heading" (click)="toggleTile()" style="padding-left:5px;"><b>Tile Layers</b>
+                                <span *ngIf="!tileShow" style="float:right">
+                                <fa-icon [icon]="angleDown" ></fa-icon>
+                                </span>
+                                <span *ngIf="tileShow" style="float: right">
+                                <fa-icon [icon]="angleUp" ></fa-icon>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="row" [hidden]="!tileShow">
+                            <div class="form-check col-12">
+                                <div *ngFor="let toplayer of tileLayers" >
+                                
+                                    
+                                        <span style="position: relative; float: left;"><b>{{toplayer.name}}</b></span>
+                                        <div class="legend-tool">
+                                        <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'Tiles')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                        <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'Tiles')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                        
+                                        </div><br>
+
+                                    <div *ngFor="let sublayer of toplayer.layers" style="width: 100%; padding-left:3px" >
+                                            
+                                        <div style="position: relative; float: left;">
+                                            <span>{{sublayer.name}}</span>
+                                        </div>
+                                        <div class="legend-tool">
+                                            <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'Tiles')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                            <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'Tiles')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+                        
+                        </div>
+
+                    </div>
+
+                    <!-- <div [hidden]="mapMode != 'Normal'">
+                    <div  >
+                        <p class="map-control-heading" (click)="toggleSearch()" style="padding-left:5px;"><b>Search Results</b> 
+                            <span *ngIf="!searchShow" style="float:right">
+                            <fa-icon [icon]="angleDown" ></fa-icon>
+                            </span>
+                            <span *ngIf="searchShow" style="float: right">
+                            <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                            </span>
+                        </p>               
+                        </div>
+                        <div class="row" [hidden]="!searchShow">
+                        <div class="form-check col-12">
+                            <div *ngFor="let toplayer of searchLayers" >
+                            
+                                
+                                    <span style="position: relative; float: left;"><b>{{toplayer.name}}</b></span>
+                                    <div class="legend-tool">
+                                    <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'Search Results')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                    <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'Search Results')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                    
+                                    </div><br>
+
+                                <div *ngFor="let sublayer of toplayer.layers" style="width: 100%; padding-left:3px" >
+                                        
+                                    <div style="position: relative; float: left;">
+                                        <span>{{sublayer.name}}</span>
+                                    </div>
+                                    <div class="legend-tool">
+                                        <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'Search Results')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                        <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'Search Results')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                    </div>
+                                    
+                                </div>
+                        </div>
+                        <br>
+                        </div>
+                        
+                    </div>
+                    </div> -->
+                    <!-- <div [hidden]="mapMode != 'What If'">
+                    <div  >
+                        <p class="map-control-heading" (click)="toggleWhatif()" style="padding-left:5px;"><b>What If</b> 
+                            <span *ngIf="!whatifshow" style="float:right">
+                            <fa-icon [icon]="angleDown" ></fa-icon>
+                            </span>
+                            <span *ngIf="whatifshow" style="float: right">
+                            <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                            </span>
+                        </p>               
+                        </div>
+                        <div  [hidden]="!whatifshow">
+                        <div class="form-check col-12">
+                            <div *ngFor="let toplayer of whatifLayers" >
+                            
+                                
+                                    <span style="position: relative; float: left;"><b>{{toplayer.name}}</b></span>
+                                    <div class="legend-tool">
+                                        <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'What If')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                        <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'What If')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                        
+                                    </div><br>
+
+                                <div *ngFor="let sublayer of toplayer.layers" style="width: 100%; padding-left:3px" >
+                                    
+                                    <div style="position: relative; float: left;">
+                                        <span>{{sublayer.name}}</span>
+                                    </div>
+                                    <div class="legend-tool">
+                                        <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'What If')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                        <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'What If')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                    </div>
+                                    
+                                </div>
+                        </div>
+                        <br>
+                        </div>
+                        
+                    </div>
+                    </div> -->
+                    <!-- <div [hidden]="mapMode != 'Add Lead' && mapMode != 'Quick Check'">
+                        <div >
+                            <p class="map-control-heading" (click)="toggleQualify()" style="padding-left:5px;"><b>New Lead</b> 
+                                <span *ngIf="!qualShow" style="float:right">
+                                <fa-icon [icon]="angleDown" ></fa-icon>
+                                </span>
+                                <span *ngIf="qualShow" style="float: right">
+                                <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                                </span>
+                            </p>               
+                        </div> -->
+                        <div [hidden]="!showGraphs">
+                            <div >
+                                <p class="map-control-heading" (click)="toggleQualify()" style="padding-left:5px;"><b>Qualification</b> 
+                                    <span *ngIf="!qualShow" style="float:right">
+                                    <fa-icon [icon]="angleDown" ></fa-icon>
+                                    </span>
+                                    <span *ngIf="qualShow" style="float: right">
+                                    <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                                    </span>
+                                </p>               
+                            </div>
+                            <div  [hidden]="!qualShow">
+                                <div class="form-check col-12">
+                                    <div *ngFor="let toplayer of qualifyLayers" >
+                                    
+                                    
+    
+                                        <span style="position: relative; float: left;"><b>{{toplayer.name}}</b></span> 
+                                        
+                                        <div class="legend-tool">
+                                            <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'Qualify')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                            <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'Qualify')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                        
+                                        </div><br>
+    
+                                        <div *ngFor="let sublayer of toplayer.layers" style="width: 100%; padding-left:3px" >
+                                            
+                                            <div style="position: relative; float: left;">
+                                                <span>{{sublayer.name}}</span>
+                                            </div>
+                                            <div class="legend-tool">
+                                                <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'Qualify')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                                <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'Qualify')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                            </div>
+                                            
+    
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            
+                            </div>
+                        </div>
+
+                    <div >
+                        <p class="map-control-heading" (click)="toggleNetwork()" style="padding-left:5px;"><b>Network</b> 
+                        <span *ngIf="!networkShow" style="float:right">
+                            <fa-icon [icon]="angleDown" ></fa-icon>
+                        </span>
+                        <span *ngIf="networkShow" style="float: right">
+                            <fa-icon [icon]="angleUp" ></fa-icon>
+                        </span>
+                        </p>               
+                    </div>
+                    <div  [hidden]="!networkShow">
+                        <div class="form-check col-12">
+                            <div *ngFor="let toplayer of layerControl" >
+                            
+                                    
+
+                                    <span style="position: relative; float: left;"><b>{{toplayer.name}}</b></span>
+                                    
+                                    <div class="legend-tool">
+                                    <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'Network')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                    <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'Network')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                    
+                                    </div><br>
+
+                                <div *ngFor="let sublayer of filterSublayers(true,toplayer.layers)" style="width: 100%; padding-left:3px" >
+                                    
+
+                                    <div style="position: relative; float: left;">
+                                        <span *ngIf="sublayer.name == 'All Locations'">{{sublayer.name}}({{totlocs}})</span>
+                                        <span *ngIf="sublayer.name == 'Serviceable Locations'">{{sublayer.name}}({{wsvccount}})</span>
+                                        <span *ngIf="(sublayer.name != 'Serviceable Locations' && sublayer.name != 'All Locations')">{{sublayer.name}}</span>
+                                    </div>
+                                    <div class="legend-tool">
+                                        <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'Network')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                                        <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'Network')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                                    </div>
+                                
+                                </div>
+                                <hr>
+                            
+                            </div>
+                        </div>
+                    </div>
+                <!-- <div>
+                <p class="map-control-heading" (click)="toggleFreq()" style="padding-left:5px;"><b>AP Frequencies</b> 
+                <span *ngIf="!frequencyShow" style="float:right">
+                    <fa-icon [icon]="angleDown" ></fa-icon>
+                    </span>
+                    <span *ngIf="frequencyShow" style="float: right">
+                    <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                    </span> 
+                </p>               
+                </div>
+                <div  [hidden]="!frequencyShow">
+                <div class="form-check col-12">
+                <div *ngFor="let toplayer of frequencyLayers" style="width: 100%">
+                        
+                        <span style="position: relative; float: left;">{{toplayer.name}}</span>
+                        
+                        <div class="legend-tool">
+                        <span *ngIf="toplayer.isSelected" (click)="layerChange(toplayer.name, false, 'Frequencies')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                        <span *ngIf="!toplayer.isSelected" (click)="layerChange(toplayer.name, true, 'Frequencies')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                        
+                        </div><br>
+                    <div *ngFor="let sublayer of toplayer.layers"  style="width: 100%; padding-left:3px">
+                        
+                            <div style="position: relative; float: left;"><span>{{sublayer.name}}<p [ngStyle]="sublayer.style"> </p></span></div>
+                            <div class="legend-tool">
+                            <span *ngIf="sublayer.isSelected" (click)="layerChange(sublayer.name, false, 'Frequencies')" nbTooltip="Show/Hide"><fa-icon [icon]="eye" ></fa-icon></span>
+                            <span *ngIf="!sublayer.isSelected" (click)="layerChange(sublayer.name, true, 'Frequencies')" nbTooltip="Show/Hide"><fa-icon [icon]="eyeSlash" ></fa-icon></span>
+                            </div>
+                            
+                        
+                    </div>
+                    <hr>
+                    
+                    </div>
+                    </div>
+                    </div>
+                    <div>
+                    <p class="map-control-heading" (click)="toggleViewsheds()" style="padding-left:5px;"><b>Viewsheds</b> 
+                        <span *ngIf="!viewshedShow" style="float:right">
+                            <fa-icon [icon]="angleDown" ></fa-icon>
+                        </span>
+                        <span *ngIf="viewshedShow" style="float: right">
+                            <fa-icon [icon]="arrow-ios-upward-outline" ></fa-icon>
+                        </span> 
+                    </p>               
+                    </div>
+                    <div class="row" [hidden]="!viewshedShow">
+                    <div class="form-check">
+                        <div *ngFor="let toplayer of viewShedlayers" >
+                        
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="toplayer.isSelected" [ngModelOptions]="{standalone: true}" (change)="layerChange(toplayer.name, $event.target.checked, 'Viewsheds')">
+                                <label class="form-check-label active" >
+                                {{ toplayer.name }}
+                                </label><br>
+
+                            <div *ngFor="let sublayer of toplayer.layers" class="ml-3" >
+                                <input class="form-check-input active" type="checkbox" [(ngModel)]="sublayer.isSelected" [ngModelOptions]="{standalone: true}" (change)="layerChange(sublayer.name, $event.target.checked,'Viewsheds')">
+                                <label class="form-check-label" >
+                                    {{ sublayer.name }}
+                                </label><br>
+                            
+                            </div>
+                            <hr>
+                        
+                        </div>
+                    </div>
+                    </div> -->
+                </form>
+            </div>
+        </div> <!--layer control-->
+
+        <!-- primary AP -->
+        <div [hidden] = "!showGraphs" style="position:absolute; top:10px; left: 50px; z-index: 999; background-color: #dbdbdb; 
+        font-size: 14px; padding:2px; height:auto; width:300px; border-radius:5px; border:1px solid black;" 
+        [innerHtml]="bestAp">
+            
+        </div>
+
+        <div [hidden] = "!showClutter30" style="position:absolute; bottom:95px; right: 1px; z-index: 990; background-color: #dbdbdb; 
+        font-size: 14px; padding:2px; height:auto; width:200px; border-radius:5px; border:1px solid black; padding-left:5px;" >
+            <p>Clutter Legend (30m)</p><br>
+            <div><div class="legsquare water"></div> Water</div><br>
+            <div><div class="legsquare evergreen"></div> Evergreen</div><br>
+            <div><div class="legsquare deciduous"></div> Deciduous</div><br>
+            <div><div class="legsquare mixed"></div> Mixed Forrest</div><br>
+            <div><div class="legsquare dwarf"></div> Dwarf Scrub</div><br>
+            <div><div class="legsquare shrub"></div> Shrub/Scrub</div><br>
+            <div><div class="legsquare grass"></div> Grasslands</div><br>
+            <div><div class="legsquare sedge"></div> Sedge/Herbacous</div><br>
+            <div><div class="legsquare lichens"></div> Lichens</div><br>
+            <div><div class="legsquare moss"></div> moss</div><br>
+            <div><div class="legsquare pasture"></div> Pasture</div><br>
+            <div><div class="legsquare crops"></div> Crops</div><br>
+            <div><div class="legsquare woodywet"></div> Woody Wetlands</div><br>
+            <div><div class="legsquare devopen"></div> Developed - Open</div><br>
+            <div><div class="legsquare devlow"></div> Developed - low</div><br>
+            <div><div class="legsquare devmed"></div> Developed - med</div><br>
+            <div><div class="legsquare devhigh"></div> Developed - high</div><br>
+            <div><div class="legsquare snow"></div> Snow/Ice</div><br>
+
+            
+            
+        </div>
+        <div [hidden] = "!showClutter10" style="position:absolute; bottom:95px; right: 1px; z-index: 990; background-color: #dbdbdb; 
+        font-size: 14px; padding:2px; height:auto; width:150px; border-radius:5px; border:1px solid black;padding-left:5px; " >
+            <p>Clutter Legend (10m)</p><br>
+            <div><div class="legsquare water10"></div>Water</div><br>
+            <div><div class="legsquare tree10"></div>Trees</div><br>
+            <div><div class="legsquare shrub10"></div>Shrubland</div><br>
+            <div><div class="legsquare grass10"></div>Grassland</div><br>
+            <div><div class="legsquare crop10"></div>Crops</div><br>
+            <div><div class="legsquare builtup"></div>Built-up</div><br>
+            <div><div class="legsquare bare10"></div>Bare</div><br>
+            <div><div class="legsquare snow10"></div>Snow/Ice</div><br>
+            <div><div class="legsquare wet10"></div>Herbaceous Wetlands</div><br>
+            <div><div class="legsquare mangroves"></div>Mangroves</div><br>
+            <div><div class="legsquare moss10"></div>Moss and Lichens</div><br>
+            
+            
+        </div>
+
+        <!-- latlon -->
+        <div style="position:absolute; bottom:1px; left: 5px; z-index: 999; background-color: #dbdbdb; font-size: 14px; padding:2px; height:25px; width:150px; border-radius:5px; text-align: center;">
+          <p>{{currentLat}},{{currentLon}}</p>
+        </div>
+
+
+        <!--small graphs pane-->
+        <div style="position: absolute; top: 65px; right: 1px; height: 50px;
+                    border: solid 1px; border-bottom-left-radius: 10px; border-top-left-radius: 10px;
+                    z-index: 994; background-color: #edf1f7; text-align: center; padding-top:12px;" [hidden]="!graphsMin" (click)="hideGraphs()">
+                <span style="padding: 3px" >Profiles</span>
+        </div>
+
+        <!-- <div class="col-lg-4 col-sm-12" [hidden]="!showGraphs || graphsMin" style="position: absolute; top: 65px; right: 1px;height:auto; overflow-y: scroll; z-index: 995;">
+            <div style="width:100%; text-align: right; background-color: #dbdbdb;" (click)="hideGraphs()"><fa-icon [icon]="arrowRight" ></fa-icon></div>  
+            <div class="graphwindow" >
+                <div *ngFor="let p of qualprofs" style="border:solid 1px" >
+                    
+                    <p class="graph-heading"  style="padding-left:5px;"> 
+                    <span *ngIf="!p.showGraph">
+                        {{p.shortTitle}}
+                    </span>
+                    <span *ngIf="!p.showGraph" style="float:right;z-index:999;">
+                        
+                        <fa-icon [icon]="angleDown" (click)="toggleGraph(p)"></fa-icon>
+                    </span>
+                    <span *ngIf="p.showGraph" style="float: right;z-index:999;" >
+                        <fa-icon [icon]="expand" (click)="selectProfile(p)"></fa-icon>
+                        <fa-icon [icon]="angleUp" (click)="toggleGraph(p)"></fa-icon>
+                    </span> 
+                    </p>
+                    <div style="height:auto;border: solid 1px;" [hidden]="!p.showGraph">
+                     
+                        <google-chart [title]="p.title" [type]="'ComboChart'" [data]="p.gchtdata" [columns]="gchtColumns" 
+                        [options]='gchtOptions'  (error)="onError($event)" (mouseenter)="profileMousemove($event,p)" id="p.ap_name"
+                        ></google-chart>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div> -->
+        <div  [hidden]="!showGraphs || graphsMin" style="position: absolute; top: 160px; right: 1px; overflow-y: auto; z-index: 995;max-height:78.3vh; min-height:23vh;">
+            <div style="width:100%; text-align: left; background-color: #dbdbdb;" > 
+                <button class="btn-primary" style="position:relative; left: 2px" (click)="cancelQualify()">Cancel</button> 
+                <fa-icon [icon]="arrowRight" (click)="hideGraphs()" style="position:absolute; right: 18px;"></fa-icon>
+            </div>
+            <!-- <div style="width:100%; text-align: right; background-color: #dbdbdb;" (click)="hideGraphs()"><nb-icon icon="arrow-forward" ></nb-icon></div>   -->
+            <div class="graphwindow" >
+                <div *ngFor="let p of qualprofs" style="border:solid 1px" >
+                    
+                    <p class="graph-heading"  style="padding-left:5px;"> 
+                    <span *ngIf="!p.showGraph">
+                        {{p.shortTitle}} 
+                    </span>
+                    <span *ngIf="!p.showGraph" style="float:right;z-index:999;">
+                        
+                        <fa-icon [icon]="angleDown" ></fa-icon>
+                    </span>
+                    <span *ngIf="p.showGraph" style="float: right;z-index:999;" >
+                        <!-- <fa-icon [icon]="expand-alt" ></fa-icon> -->     
+                        <fa-icon [icon]="angleUp" ></fa-icon>
+                    </span> 
+
+                    </p>
+                    <div style="height:auto;border: solid 1px;" [hidden]="!p.showGraph">
+                        <google-chart [title]="p.title" [type]="'ComboChart'" [data]="p.gchtdata" [columns]="gchtColumns" 
+                        [options]='p.gchtoptions'  (error)="onError($event)" (mouseover)="profileMousemove($event,p)" id="p.ap_name"
+                        ></google-chart>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+      </div> <!--full map page div-->
+
+
+
+
+
+    </div>
+</div>

@@ -1,0 +1,172 @@
+<div class='period-bar' style="width:250px;">
+    <span>
+    <label >Period End Date:</label>
+      <select class="form-control" id="perEnd" name="perEnd" #periodEnd  (change)="changePeriod(periodEnd.value)">
+                    
+        <option [value]="'June 30, 2022'">June 30, 2022</option>
+        <option [value]="'Dec 31, 2022'">Dec 31, 2022</option>
+        <option [value]="'June 30, 2023'">June 30, 2023</option>
+        <option [value]="'Dec 31, 2023'">Dec 31, 2023</option>
+        <option [value]="'June 30, 2024'">June 30, 2024</option>
+        <option [value]="'Dec 31, 2024'">Dec 31, 2024</option>
+        <option [value]="'June 30, 2025'">June 30, 2025</option>
+        
+        <!-- <option value="underground">Underground</option> -->
+        
+      </select> 
+    </span>
+  </div>  
+  
+  
+  <div class="example-container mat-elevation-z8">
+    <!-- <div class="example-loading-shade"
+         *ngIf="isLoadingResults || isRateLimitReached">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+     
+    </div> -->
+  
+    <div class="example-table-container">
+  
+      <table mat-table [dataSource]="companyData" class="example-table"
+             matSort  #statSort="matSort">
+      
+  
+        <ng-container matColumnDef="id">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let row">{{row.id}}</td>
+        </ng-container>
+  
+        <!-- Number Column -->
+        <ng-container matColumnDef="company">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let row" (click)="getMap(row)">{{row.company}}</td>
+        </ng-container>
+  
+        <!-- Title Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let row">{{row.email}}</td>
+        </ng-container>
+  
+        <!-- State Column -->
+        <ng-container matColumnDef="info">
+          <th mat-header-cell *matHeaderCellDef>Info Page</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.filer_info ? 'cell-green':'cell-red'">
+            <span >{{row.status.filer_info}}</span>
+            </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="subscription">
+          <th mat-header-cell *matHeaderCellDef>Subscribers</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.subscription_required && (row.status.subscription_complete == 'complete') ? 'cell-green' : (row.status.subscription_required && (row.status.subscription_complete == '' || row.status.subscription_complete == null) ? 'cell-red' : (row.status.subscription_required && (row.status.subscription_complete == 'errors')? 'cell-yellow' : 'cell-white'))">
+            <span *ngIf="row.status.subscription_required" >{{row.status.subscription_complete}}</span>
+            <span *ngIf="!row.status.subscription_required"></span>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="sites">
+          <th mat-header-cell *matHeaderCellDef>Sites</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.sitesrequired && row.status.sites_complete ? 'cell-green':(row.status.sitesrequired && !row.status.sites_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.sitesrequired" >{{row.status.sites_complete}}</span>
+            <span *ngIf="!row.status.sitesrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="aps">
+          <th mat-header-cell *matHeaderCellDef>APs</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.sitesrequired && row.status.sites_complete ? 'cell-green':(row.status.sitesrequired && !row.status.sites_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.sitesrequired" >{{row.status.aps_complete}}</span>
+            <span *ngIf="!row.status.sitesrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="wired">
+          <th mat-header-cell *matHeaderCellDef>Wired Polys</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.wiredrequired && row.status.wired_complete ? 'cell-green':(row.status.wiredrequired && !row.status.wired_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.wiredrequired" >{{row.status.wired_complete}}</span>
+            <span *ngIf="!row.status.wiredrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="settings">
+          <th mat-header-cell *matHeaderCellDef>RF Settings</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.sitesrequired && row.status.settings  ? 'cell-green':(row.status.sitesrequired && !row.status.settings ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.sitesrequired" >{{row.status.settings}}</span>
+            <span *ngIf="!row.status.sitesrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fabric">
+          <th mat-header-cell *matHeaderCellDef>Fabric</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.bdcrequired && row.status.bdc_complete ? 'cell-green':(row.status.bdcrequired && !row.status.bdc_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.bdcrequired" >{{row.status.bdc_complete}}</span>
+            <span *ngIf="!row.status.bdcrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="cnheat">
+          <th mat-header-cell *matHeaderCellDef>cnHeat</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.cnheatrequired && row.status.cnheat_complete ? 'cell-green':(row.status.cnheatrequired && !row.status.cnheat_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.cnheatrequired" >{{row.status.cnheat_complete}}</span>
+            <span *ngIf="!row.status.cnheatrequired"></span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef>State</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.staterequired && row.status.state_complete ? 'cell-green':(row.status.staterequired && !row.status.state_complete ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.staterequired" >{{row.status.state_complete}}</span>
+            <span *ngIf="!row.status.staterequired"></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bdc">
+          <th mat-header-cell *matHeaderCellDef>BDC</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.bdc_status == 100 ? 'cell-green':(row.status.bdc_status > 0 && row.status.bdc_status < 100 ? 'cell-yellow':( !row.status.bdc_status ? 'cell-red':'cell-white'))">
+            <span>{{row.status.bdc_status}}</span>
+            
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pe">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>PE Review</th>
+          <td mat-cell *matCellDef="let row" [ngClass]="row.status.pe_reviewed ? 'cell-green':(!row.status.pe_reviewed ? 'cell-red':'cell-white')">
+            <span *ngIf="row.status.pe_reviewed" >{{row.status.pe_reviewed}}</span>
+            <span *ngIf="!row.status.pe_reviewed"></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dups">
+          <th mat-header-cell *matHeaderCellDef>Check Dups</th>
+          <td mat-cell *matCellDef="let row" >
+            <button class='button' (click)="checkDuplicates(row)">Check</button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="prep">
+          <th mat-header-cell *matHeaderCellDef>Prep Filing</th>
+          <td mat-cell *matCellDef="let row" >
+            <button class='button' (click)="prepareFiling(row)">Go</button>
+          </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="cust">
+          <th mat-header-cell *matHeaderCellDef>Customer</th>
+          <td mat-cell *matCellDef="let row" >
+            <button class='button' (click)="showCustomer(row)">View</button>
+          </td>
+        </ng-container>
+  
+  
+  
+  
+        <!-- Created Column -->
+       <!--  <ng-container matColumnDef="FCC ">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+            Created
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.created_at | date}}</td>
+        </ng-container> -->
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+      </table>
+    </div>
+  
+    <!-- <mat-paginator [length]="resultsLength" [pageSize]="1000" aria-label=""></mat-paginator> -->
+  </div>
+  <router-outlet></router-outlet>

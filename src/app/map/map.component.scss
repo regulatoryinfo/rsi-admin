@@ -1,0 +1,309 @@
+
+
+
+
+  ::ng-deep .leaflet-top, ::ng-deep .leaflet-bottom {
+    z-index: 997;
+  }
+
+  ::ng-deep .leaflet-control-zoom { border: none; a { text-decoration: none !important; } }
+
+  ::ng-deep .leaflet-container {
+    width: 100%;
+    height: 100%;
+    
+  }
+
+  .small-map-container {
+    width:100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  .map {
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .coords {
+    height: 35px;
+    width: 200px;
+    position: relative;
+    left: 10px;
+    bottom: 27px;
+  }
+
+
+.legend-tool {
+  display: flex;
+  justify-content: flex-end;
+  z-index: 999;
+}
+
+
+  .mapcontrols {
+    border: solid 2px;
+    background-color: #edf1f7;  
+    min-height: 800px;
+    height: 100%;
+    display: flex;
+    flex: 1;
+    padding:1rem 1.25rem;
+  }
+
+  .profile {
+      width: 30%;
+      height: 100%;
+
+  }
+  
+  .map-control-heading {
+    width:100%;
+    border:solid 1px;
+    background-color: #bbbbbb;
+    border-radius: 5px;
+    font-size: 12px;
+    }
+
+    .map-project-heading {
+      width:100%;
+      font-size: 12px;
+      font-weight: bold;
+   
+      }
+
+    .control-window {
+        // height:70vh;
+        // max-height: 70vh;
+        overflow-y: auto;
+        border: solid 1px;
+        position:absolute; right: 10px; top: 10px; z-index:997;width: 300px;display: block; height: auto; border-radius:10px;padding:15px;background-color: #dbdbdb;
+        
+      
+    }
+
+  .theme-window {
+    height:90%;
+
+  }
+
+  .info-window {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    position:absolute; 
+    right: 36px; 
+    top: 110px; 
+    z-index:900;
+    width: 100%;
+    height:85%;
+    padding-left: 5px;
+    background-color: #dbdbdb;
+    overflow:hidden;
+
+  
+  }
+
+  .sub-control-window {
+
+    position:relative;
+    width:100%;
+    margin-top:5px;
+    overflow-y: scroll;
+    height: 60%;
+  
+  }
+
+  .leadwindow{
+    z-index: 999;
+    border: 1px solid ;
+    border-radius: 20px;
+    padding-top:20px;
+    padding-bottom:20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 3px;
+  }
+
+  .graphwindow{
+
+    z-index: 999;
+    border: 1px solid ;
+    min-height: 20vh;
+    overflow-y: scroll;
+  }
+
+  .profilewindow{
+    z-index: 999;
+    border: 1px solid ;
+    max-height: 35vh;
+    height: 25vh;
+ 
+    width: 100%;
+  }
+  .profilewindowtest{
+
+    z-index: 999;
+
+    border: 1px solid ;
+    border-radius: 20px;
+    width: 100%;
+    padding-top:20px;
+    padding-bottom:20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: 3px;
+  }
+
+  .graph-heading {
+    width:100%;
+    border:solid 1px;
+    background-color: #7f7f7f
+    }
+
+  .lcUl {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    width: 100%;
+    
+  }
+
+  .lcLi {
+    list-style-type: none;
+    margin: 5px;
+    padding: 0;
+    font-size: 12px;
+    width: 100%;
+    
+  }
+
+
+  [hidden] {
+    display: none;
+  }
+
+  .legsquare {
+    float: left;
+    height: 15px;
+    width: 15px;
+    margin-bottom: 5px;
+    border: 1px solid black;
+    clear: both;
+  }
+  
+  .water {
+    background-color: #486DA2;
+  }
+  
+  .evergreen {
+    background-color: #1d6533;
+  }
+  
+  .deciduous {
+    background-color: #85C77E;
+  }
+
+  .mixed {
+    background-color: #D4E7B0;
+  }
+
+  .barren {
+    background-color: #D2CDC0;
+  }
+
+  .dwarf {
+    background-color: #AF963C;
+  }
+
+  .shrub {
+    background-color: #DCCA8F;
+  }
+
+  .grass {
+    background-color: #FDE9AA;
+  }
+
+  .sedge {
+    background-color: #D1D182;
+  }
+
+  .lichens {
+    background-color: #A3CC51;
+  }
+
+  .moss {
+    background-color: #82BA9E;
+  }
+
+  .pasture {
+    background-color: #FBF65D;
+  }
+
+  .crops {
+    background-color: #CA9146;
+  }
+
+  .woodywet {
+    background-color: #C8E6F8;
+  }
+  .wet {
+    background-color: #64B3D5;
+  }
+  .devopen {
+    background-color: #E8D1D1;
+  }
+  .devlow {
+    background-color: #E29E8C;
+  }
+  .devmed {
+    background-color: #FF0000;
+  }
+  .devhigh {
+    background-color: #B50000;
+  }
+  .snow {
+    background-color: #FFFFFF;
+  }
+
+  .tree10 {
+    background-color: #76A772;
+  }
+
+  .shrub10 {
+    background-color: #F6F598;
+  }
+  .grass10 {
+    background-color: #E7F88E;
+  }
+  .crop10 {
+    background-color: #EEC0F2;
+  }
+  .builtup {
+    background-color: #F37572;
+  }
+  .bare10 {
+    background-color: #B4B4B4;
+  }
+  .snow10 {
+    background-color: #F0F0F0;
+  }
+  .water10 {
+    background-color: #0064C8;
+  }
+  .wet10 {
+    background-color: #0096A0;
+  }
+  .mangroves {
+    background-color: #5D9C58;
+  }
+  .moss10 {
+    background-color: #F6D283;
+  }
+
+
+

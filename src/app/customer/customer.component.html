@@ -1,0 +1,64 @@
+<div style="margin-left: 20px;">
+    <h2>Company Information</h2>
+
+    <div id="companyInfo">
+        <b><u>Company Info</u></b><br>
+        <p>
+            <b>ID</b>: {{org.id}}<br>
+            <b>Company:</b> {{org.company}}<br>
+            <b>Address:</b> {{org.address}}<br>
+            <span *ngIf="org.address2 && org.address2 != ''"><b>Addr2:</b> {{org.address2}}<br></span>
+            <b>City:</b> {{org.city}}<br>
+            <b>State:</b> {{org.state}}<br>
+            <b>Zip:</b> {{org.zip}}<br>
+            <b>Start Date:</b> {{org.start_date}}<br>
+            <b>Referrer:</b> {{org.referrer}}
+            
+        </p>
+
+
+
+    </div>
+
+    <div id="userInfo">
+        <b><u>Users</u></b><br>
+        <div *ngFor="let u of users">
+            <p>
+                <b>Name:</b> {{u.name}} <br>
+                <b>Email:</b> {{u.email}}<br>
+                <b>Mobile:</b> {{u.mobile}}<br>
+
+            </p>
+        </div>
+    </div>
+
+    <div id="invoiceInfo">
+        <b><u>Invoices</u></b><br>
+        <table style>
+            <thead>
+                <tr style="border: 1px solid; background-color: lightgray;">
+                    <th>Invoice</th>
+                    <th>Date</th>
+                    <th>Items Total</th>
+                    <th>Tax Total</th>
+                    <th>Payments</th>
+                    <th>Credits</th>
+                    <th>Balance</th>
+                    <th>Due On</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr *ngFor="let inv of invoices" style="border: 1px solid">
+                    <td style="border: 1px solid; text-align: right;">{{inv.id}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.date}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.item_total}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.tax_total}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.payments.total_payments}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.credits.total_credits}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.balance}}</td>
+                    <td style="border: 1px solid; text-align: right;">{{inv.due}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
